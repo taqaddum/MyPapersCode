@@ -1,5 +1,5 @@
-MyYolo-v3/data/image
-MyYolo-v3/data/annotation
+Yolo-v3/data/image
+Yolo-v3/data/annotation
 **/.idea
 **/.vscode
-workspace.code-workspace
+MyPapper.code-workspace
