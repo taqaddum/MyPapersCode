@@ -1,0 +1,35 @@
+1651220351715	geckodriver	INFO	Listening on 127.0.0.1:54951
+1651220354428	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--headless" "-no-remote" "-profile" "C:\\Users\\jhZou\\AppData\\Local\\Temp\\rust_mozprofileK3V1Ka"
+*** You are running in headless mode.
+1651220355171	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jhZou\\AppData\\Local\\Temp\\rust_mozprofileK3V1Ka\\search.json.mozlz4", (void 0)))
+1651220356577	Marionette	INFO	Listening on port 54959
+1651220356600	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://dlswbr.baidu.com/heicha/mw/abclite-2033-s.js, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://image.baidu.com"
+JavaScript warning: https://dlswbr.baidu.com/heicha/mw/abclite-2033-s.js, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1651221223370	geckodriver	INFO	Listening on 127.0.0.1:55389
+1651221226383	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--headless" "-no-remote" "-profile" "C:\\Users\\jhZou\\AppData\\Local\\Temp\\rust_mozprofiled4EmQx"
+*** You are running in headless mode.
+1651221226835	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\jhZou\\AppData\\Local\\Temp\\rust_mozprofiled4EmQx\\search.json.mozlz4", (void 0)))
+1651221228330	Marionette	INFO	Listening on port 55397
+1651221228426	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://dlswbr.baidu.com/heicha/mw/abclite-2033-s.js, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://image.baidu.com"
+JavaScript warning: https://dlswbr.baidu.com/heicha/mw/abclite-2033-s.js, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1651221417074	Marionette	INFO	Stopped listening on port 55397
+
+###!!! [Parent][PContentParent] Error: Send(msgname=PContent::Msg_DestroyBrowsingContextGroup) Closed channel: cannot send/recv
+
+
+###!!! [Child][PContentChild] Error: RunMessage(msgname=PContent::Reply_DiscardBrowsingContext) Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][PContentChild] Error: RunMessage(msgname=PHttpChannel::Msg_DeleteSelf) Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
+
