@@ -35,16 +35,16 @@ class YoloDataset(data.Dataset):
             box = np.array(box)
         else:
             image = np.array(img)
-        # 关闭文件流
-        orimage.close()
-        img.close()
         # yolo格式化
         if len(box):
             box[:, [2, 3]] -= box[:, [0, 1]]
             box[:, [0, 1]] += box[:, [2, 3]] / 2
             box[:, [0, 2]] /= self.shape[1]
             box[:, [1, 3]] /= self.shape[0]
-            return image, box, label
+        # 关闭文件流
+        orimage.close()
+        img.close()
+        return image, box, label
 
     def letterbox(self, origin: Image, result: Image, box: np.array, shape: tuple):
         w, h = origin.size  # resize前的原始尺寸
@@ -62,7 +62,9 @@ class YoloDataset(data.Dataset):
         box[:, [0, 1]][box[:, [0, 1]] < 0] = 0
         box[:, 2][box[:, 2] > nw] = nw
         box[:, 3][box[:, 3] > nh] = nh
-        filter = np.logical_and((box[:, 2] - box[:, 0]) > 0, (box[:, 3] - box[:, 1]) > 0)
+        filter = np.logical_and(
+            (box[:, 2] - box[:, 0]) > 0, (box[:, 3] - box[:, 1]) > 0
+        )
         box = box[filter]
 
     def augmention(self, image: Image, bboxes, label, transform):
@@ -71,10 +73,10 @@ class YoloDataset(data.Dataset):
             bbox_params = A.BboxParams(
                 format="pascal_voc", label_fields=["class_labels"]
             )
-            flip = A.OneOf([A.HorizontalFlip(), A.VerticalFlip(), A.Rotate(),])
-            blur = A.OneOf([A.MotionBlur(), A.MedianBlur(), A.RandomFog()])
+            flip = A.Sequential([A.HorizontalFlip(), A.VerticalFlip(), A.Rotate()])
+            disturb = A.OneOf([A.ISONoise(), A.RandomFog()])
             transform = A.Compose(
-                [flip, A.ColorJitter(), A.RandomGamma(), A.ISONoise(), blur],
+                [flip, A.ColorJitter(), A.MotionBlur(), disturb],
                 bbox_params=bbox_params,
             )
         transformed = transform(image=image, bboxes=bboxes, class_labels=label)
