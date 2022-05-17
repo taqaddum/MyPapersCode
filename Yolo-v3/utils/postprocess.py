@@ -6,7 +6,7 @@ from numpy import ndarray
 from torch import Tensor
 from torchvision import ops
 
-
+#note:预测阶段锚框解码，不进行反向传播
 class DecodeBox:
     def __init__(
         self,
@@ -97,9 +97,8 @@ class DecodeBox:
 
     def yolo2voc(self, bbxy: ndarray, bbwh: ndarray, letterbox: bool = True) -> ndarray:
         if letterbox:
-            scal = min(self.shapew / self.imwidth, self.shapeh / self.imheight)
             imwh = np.array((self.imwidth, self.imheight))
-            rewh = np.round(imwh * scal)
+            rewh = np.round(imwh * min(self.shapew / self.imwidth, self.shapeh / self.imheight))
             shapewh = np.array((self.shapew, self.shapeh))
             factor = shapewh / rewh
             offset = (shapewh - rewh) / 2.0 / shapewh
@@ -112,11 +111,10 @@ class DecodeBox:
         return bbox
 
     def getbox(self, features):
-        with torch.no_grad():
-            outcome = self.boxformat(features)
-            nmsbox = self.customnms(torch.cat(outcome, dim=1))
-            for i, box in enumerate(nmsbox):
-                box = box.numpy()
-                nmsbox[i] = self.yolo2voc(box[:2], box[2:4])
+        outcome = self.boxformat(features)
+        nmsbox = self.customnms(torch.cat(outcome, dim=1))
+        for i, box in enumerate(nmsbox):
+            box = box.numpy()
+            nmsbox[i] = self.yolo2voc(box[:2], box[2:4])
         return nmsbox
 

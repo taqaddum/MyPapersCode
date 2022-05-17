@@ -120,7 +120,7 @@ class YoloDataset(data.Dataset):
         box[:, 2][box[:, 2] > nw] = nw
         box[:, 3][box[:, 3] > nh] = nh
         filter = np.logical_and(
-            (box[:, 2] - box[:, 0]) > 0, (box[:, 3] - box[:, 1]) > 0
+            (box[:, 2] - box[:, 0]) > 1, (box[:, 3] - box[:, 1]) > 1
         )
         box = box[filter]
 
