@@ -14,13 +14,13 @@ class DecodeBox:
         anchor_num: List[int],
         class_num: int,
         imgsize: Tuple[int, int],
-        inputshape: Tuple[int, int],
+        inshape: Tuple[int, int],
     ) -> None:
         self.anchors = sorted(anchors, key=lambda x: x[0] * x[1])
         self.anchor_num = anchor_num
         self.class_num = class_num
         self.imwidth, self.imheight = imgsize
-        self.shapew, self.shapeh = inputshape
+        self.shapeh, self.shapew = inshape
 
     def boxformat(self, features):
         assert len(features) != len(self.anchor_num), "锚框数不匹配！！！"
@@ -31,14 +31,14 @@ class DecodeBox:
             rows, columns = feature.shape[-2], feature.shape[-1]
 
             rear = fore + self.anchor_num[i]
-            step = self.inputshape[0] // rows
-            anchorwh = np.array(
-                [(aw / step, ah / step) for aw, ah in self.anchors[fore:rear]]
+            step = (self.shapeh // rows, self.shapw // columns)
+            nwanchor = np.array(
+                [(aw / step[1], ah / step[0]) for aw, ah in self.anchors[fore:rear]]
             )
             fore = rear
 
             bboxattrs: Tensor = feature.reshape(
-                -1, len(anchorwh), 5 + self.class_num, rows, columns
+                -1, len(nwanchor), 5 + self.class_num, rows, columns
             )
             bboxattrs = bboxattrs.permute(0, 1, 3, 4, 2)
             dims = bboxattrs.shape
@@ -49,8 +49,8 @@ class DecodeBox:
             by = torch.from_numpy(np.tile(gridxy[1].astype(float), (*dims[:-1], 1)))
 
             tw, th = bboxattrs[..., 2], bboxattrs[..., 3]
-            pw = torch.from_numpy(anchorwh[:, 0, None, None])
-            ph = torch.from_numpy(anchorwh[:, 1, None, None])
+            pw = torch.from_numpy(nwanchor[:, 0, None, None])
+            ph = torch.from_numpy(nwanchor[:, 1, None, None])
 
             conf = torch.sigmoid(bboxattrs[..., 4])
             cls = torch.sigmoid(bboxattrs[..., 5:])
