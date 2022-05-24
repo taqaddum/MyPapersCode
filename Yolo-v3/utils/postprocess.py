@@ -6,6 +6,7 @@ from numpy import ndarray
 from torch import Tensor
 from torchvision import ops
 
+
 #note:预测阶段锚框解码，不进行反向传播
 class DecodeBox:
     def __init__(

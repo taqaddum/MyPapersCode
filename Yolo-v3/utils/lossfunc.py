@@ -7,9 +7,16 @@ from torch import Tensor, nn, optim
 
 
 class YoloLoss(nn.Module):
-    def __init__(self, anchors, anchor_num, inshape, num_class, iou_thres=0.5) -> None:
+    def __init__(
+        self,
+        anchors: List[List[int, int]],
+        anchor_num: int,
+        img_resize: Tuple[int, int],
+        num_class: int,
+        iou_thres: float = 0.5,
+    ) -> None:
         self.anchors = sorted(anchors, key=lambda x: x[0] * x[1])
-        self.width, self.height = inshape
+        self.width, self.height = img_resize
         self.num_class = num_class
         self.anchor_num = anchor_num
 
@@ -37,7 +44,7 @@ class YoloLoss(nn.Module):
     def objMask(self, target):
         ...
 
-    def fetchIou(self, anchors, bbox):
+    def fetchIou(self, anchors: ndarray, bbox: ndarray):
         anchors_wh = anchors[:, [2, 3]] - anchors[:, [0, 1]]
         bbox_wh = bbox[:, [2, 3]] - bbox[:, [0, 1]]
         area_anchors = anchors_wh[:, 0] * anchors_wh[:, 1]
@@ -46,7 +53,7 @@ class YoloLoss(nn.Module):
 
         left_upper = np.maximum(anchors[:, [0, 1]], bbox[:, None, [0, 1]])
         right_bottom = np.minimum(anchors[:, [2, 3]], bbox[:, None, [2, 3]])
-        inter_wh = np.clip(right_bottom-left_upper, 0, None)
+        inter_wh = np.clip(right_bottom - left_upper, 0, None)
         inter_area = inter_wh[..., 0] * inter_wh[..., 1]
 
         return inter_area / (union_area - inter_area)

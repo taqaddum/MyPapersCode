@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict, _KT, _VT
 
 import albumentations as A
 import numpy as np
@@ -13,6 +13,7 @@ class YoloDataset(data.Dataset):
         self,
         path: str,
         shape: Tuple[int, int],
+        labelmap: Dict[str, int],
         train: bool = True,
         transform: A.Compose = None,
     ) -> None:
@@ -21,9 +22,11 @@ class YoloDataset(data.Dataset):
         Parameters
         ----------
         path : str
-            train_val文件路径
+            train_val.npy文件路径
         shape : Tuple[int, int]
             模型规定宽高
+        labelmap : Dict[str, int]
+            标签映射
         train : bool, optional
             数据增强开关, by default True
         transform : A.Compose, optional
@@ -34,11 +37,12 @@ class YoloDataset(data.Dataset):
         self.shape = shape
         self.train = train
         self.transform = transform
+        self.labelmap = labelmap
 
     def __len__(self) -> int:
         return len(self.dataset)
 
-    def __getitem__(self, index) -> Tuple[ndarray, ndarray, List[str]]:
+    def __getitem__(self, index: int) -> Tuple[ndarray, ndarray, List[str]]:
         """构造数据集
 
         Parameters
@@ -48,7 +52,7 @@ class YoloDataset(data.Dataset):
 
         Returns
         -------
-        Tuple[Image.Image, ndarray, List[str]]
+        Tuple[ndarray, ndarray, List[str]]
             图片，目标边界框，目标类别标签
         """
         # 读取数据并打乱边界框顺序
@@ -60,7 +64,7 @@ class YoloDataset(data.Dataset):
         )
         np.random.shuffle(boxlabel)
         # 调整样本输入格式
-        label = boxlabel["f0"].tolist()
+        label = [self.labelmap[key] for key in boxlabel["f0"].tolist()]
         box = np.c_[boxlabel["f1"], boxlabel["f2"], boxlabel["f3"], boxlabel["f4"]]
         self.letterbox(orimage, img, box, self.shape)
         # 是否执行数据增强
