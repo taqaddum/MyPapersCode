@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict, _KT, _VT
+from typing import List, Tuple, Dict
 
 import albumentations as A
 import numpy as np

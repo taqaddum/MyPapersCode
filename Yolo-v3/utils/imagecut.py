@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 
 class OverlapCrop:
-    def __init__(self, image, wind_size, overlap_ratio):
+    def __init__(self, img, wind_size, overlap_ratio):
         """图像裁剪，有重叠区域
 
         Parameters
@@ -21,9 +21,9 @@ class OverlapCrop:
         """
         assert 0 < overlap_ratio[0] < 1.0, "tuple[0]必须为(0,1)之间的浮点数"
         assert 0 < overlap_ratio[1] < 1.0, "tuple[1]必须为(0,1)之间的浮点数"
-        assert isinstance(image, Image.Image), "不是PIL格式"
+        assert isinstance(img, Image.Image), "不是PIL格式"
 
-        self.img = image
+        self.img = img
         self.wind = wind_size
         self.overlap = (
             int(wind_size[0] * overlap_ratio[0]),
