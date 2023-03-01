@@ -49,20 +49,31 @@ class SppNet(nn.Module):
         for i in range(num):
             outchannel = channels[i % 2]
             kp = (3, 1) if i % 2 else (1, 0)
-            cblset.add_module(f"cbl_num{i}", ConvBL(inchannel, outchannel, kp[0], kp[1]))
+            cblset.add_module(
+                f"cbl_num{i}", ConvBL(inchannel, outchannel, kp[0], kp[1])
+            )
             inchannel = outchannel
         return cblset
 
     def forward(self, backbone_small, backbone_middle, backbone_large):
         predata = self.cblset_pre(self.backbone(backbone_large))
 
-        sppset = [predata, self.spp_1(predata), self.spp_2(predata), self.spp_3(predata)]
+        sppset = [
+            predata,
+            self.spp_1(predata),
+            self.spp_2(predata),
+            self.spp_3(predata),
+        ]
         spp_out = self.concate_spp(torch.concat(sppset, dim=1))
         scal_large = self.cblset_large(spp_out)
 
         middleset = [self.upsample_1(self.cbl_256(scal_large)), backbone_middle]
-        scal_middle = self.cblset_middle(self.concate_middle(torch.concat(middleset, dim=1)))
+        scal_middle = self.cblset_middle(
+            self.concate_middle(torch.concat(middleset, dim=1))
+        )
 
         smallset = [self.upsample_2(self.cbl_128(scal_middle)), backbone_small]
-        scal_small =self.cblset_small(self.concate_small(torch.concat(smallset, dim=1)))
+        scal_small = self.cblset_small(
+            self.concate_small(torch.concat(smallset, dim=1))
+        )
         return scal_small, scal_middle, scal_large
